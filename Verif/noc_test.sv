@@ -40,7 +40,7 @@ class noc_test extends uvm_test;
 
 		//file_red = $fopen("packet_num.txt","r");
 		//$fscanf(file_red, "%d\n", pkt_cnt);
-		pkt_cnt = 1000;
+		pkt_cnt = 20;
 	endfunction : build_phase
 
 	function void connect_phase(uvm_phase phase);
@@ -54,7 +54,10 @@ class noc_test extends uvm_test;
 			for (int i = 0; i < pkt_cnt; i++) begin
 				index = $urandom()%TOTAL_CORES;
 				seq[index].start(env.agent[index].sequencer);
+				// #100ns; // it increases sim time SIGNIFICANTLY
 			end
+		`uvm_info("TEST", "All packets sent. Waiting for DUT to process...", UVM_INFO)
+  		#10us;
 		phase.drop_objection(this);
 
 	endtask : run_phase

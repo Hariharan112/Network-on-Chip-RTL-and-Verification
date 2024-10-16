@@ -24,13 +24,13 @@ noc_pkt req = new();
 	endfunction : new
 
 	virtual task body();
-	// `ifdef FROM_FILE
+	`ifdef FROM_FILE
 		core_seq_file(core_seq_num); //run the sequence only if the specific core is selected in the core selection vector
-	// `endif
-
-	`ifdef FROM_RAND
-		core_seq_rand(core_seq_num);
 	`endif
+
+	// `ifdef FROM_RAND
+		core_seq_rand(core_seq_num);
+	// `endif
 	endtask:body
 
 	task core_seq_file(int n);
@@ -154,7 +154,7 @@ noc_pkt req = new();
 	// 	    r=$fscanf(file_red, "%b\n",fl);
 	// 	    r=$fscanf(file_red, "%b\n",fl);
 
-		int seed = 9;
+		int seed = $urandom($time);
 		req.srandom(seed);
 		    
 		     // `uvm_do_with(req,{req.vc_id==vid;req.src_addr==sa;req.dst_addr==da;req.payload_len==TOTAL_PAYLOADS_PER_PACKET-1;foreach(req.payload[i])req.payload[i]==pld[i];req.core_num==core_seq_num; })

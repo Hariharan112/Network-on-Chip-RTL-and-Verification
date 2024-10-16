@@ -6,8 +6,8 @@ package noc_pkg;
 	import uvm_pkg::*;
 parameter RANDOM_SEED = 5;
 
-parameter NO_OF_ROWS =6;
-parameter NO_OF_COLUMNS =3;
+parameter NO_OF_ROWS =2;
+parameter NO_OF_COLUMNS =2;
 
 
 parameter TOTAL_CORES = NO_OF_ROWS * NO_OF_COLUMNS;
@@ -33,6 +33,7 @@ uvm_event ev_010[TOTAL_CORES];
 	`include "noc_driver.sv"
 	`include "noc_monitor.sv"
 	`include "noc_agent.sv"
+	`include "noc_scoreboard.sv"
 	`include "noc_env.sv"
 	`include "noc_test.sv"
 

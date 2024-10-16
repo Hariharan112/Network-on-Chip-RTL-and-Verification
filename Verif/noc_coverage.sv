@@ -79,7 +79,10 @@ class noc_coverage extends uvm_agent;
 	 //   //option.weight=0;
 	 // }
 	 CROSS_COV: cross SRC_ADDR, DST_ADDR {
-		//Man cant do any workaround here on vivado
+		// illegal_bins ib = binsof(SRC_ADDR) intersect binsof(DST_ADDR) iff(src_addr_in[index] == dst_addr_in[index]);
+		illegal_bins ib = {
+			{8'h00,8'h00},{8'h01,8'h01},{8'h10,8'h10},{8'h11,8'h11}
+		};
  }
   endgroup
 
@@ -100,7 +103,8 @@ class noc_coverage extends uvm_agent;
 	  //   //option.weight=0;
 	  // }
 	  CROSS_COV: cross SRC_ADDR, DST_ADDR {
-	  //bins valid[] = {CROSS_COV iff(SRC_ADDR !== DST_ADDR)};
+		// illegal_bins ib = binsof(SRC_ADDR) intersect binsof(DST_ADDR);
+		// illegal_bins ib = CROSS_COV with (src_addr_out[index] == dst_addr_out[index]);
   }
   endgroup
 
@@ -141,7 +145,7 @@ class noc_coverage extends uvm_agent;
 		  vc_id_in[n] = txns_in[n].header_flit[28:27];
 	  src_addr_in[n] = txns_in[n].header_flit[15:8];
 	  dst_addr_in[n] = txns_in[n].header_flit[7:0];
-	  `uvm_info("COVERAGE", $sformatf("vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_in[n], src_addr_in[n], dst_addr_in[n]), UVM_INFO)
+	  `uvm_info("COVERAGE", $sformatf("INPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_in[n], src_addr_in[n], dst_addr_in[n]), UVM_INFO)
 	  mesh_cg_in.sample(n);
 	  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage IN is %0f, packets sent so far: %d",mesh_cg_in.get_coverage(), in_pkts), UVM_INFO);
   end
@@ -154,6 +158,7 @@ class noc_coverage extends uvm_agent;
 		  vc_id_out[n] = txns_out[n].header_flit[28:27];
 		  src_addr_out[n] = txns_out[n].header_flit[15:8];
 		  dst_addr_out[n] = txns_out[n].header_flit[7:0];
+		  `uvm_info("COVERAGE", $sformatf("OUTPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_out[n], src_addr_out[n], dst_addr_out[n]), UVM_INFO)
 		  mesh_cg_out.sample(n);
 		  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage OUT is %0f, packets sent so far: %d",mesh_cg_out.get_coverage(), out_pkts), UVM_INFO);
 	  end
