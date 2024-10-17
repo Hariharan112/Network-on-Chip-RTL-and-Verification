@@ -37,7 +37,7 @@ class noc_coverage extends uvm_agent;
   /*-------------------------------------------------------------------------------
   -- Functions
   -------------------------------------------------------------------------------*/
-	// Convert the functions to tasks
+	// Convert the functions to tasks someday?
 	function automatic validB get_valid_bins();
 	int index = 0;
     for (int row = 0; row < NO_OF_ROWS; row++) begin
@@ -79,10 +79,9 @@ class noc_coverage extends uvm_agent;
 	 //   //option.weight=0;
 	 // }
 	 CROSS_COV: cross SRC_ADDR, DST_ADDR {
-		// illegal_bins ib = binsof(SRC_ADDR) intersect binsof(DST_ADDR) iff(src_addr_in[index] == dst_addr_in[index]);
-		illegal_bins ib = {
-			{8'h00,8'h00},{8'h01,8'h01},{8'h10,8'h10},{8'h11,8'h11}
-		};
+		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
+		option.cross_auto_bin_max = TOTAL_CORES;
+		
  }
   endgroup
 
@@ -103,8 +102,8 @@ class noc_coverage extends uvm_agent;
 	  //   //option.weight=0;
 	  // }
 	  CROSS_COV: cross SRC_ADDR, DST_ADDR {
-		// illegal_bins ib = binsof(SRC_ADDR) intersect binsof(DST_ADDR);
-		// illegal_bins ib = CROSS_COV with (src_addr_out[index] == dst_addr_out[index]);
+		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
+		option.cross_auto_bin_max = TOTAL_CORES;
   }
   endgroup
 

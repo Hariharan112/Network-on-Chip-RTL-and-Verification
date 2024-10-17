@@ -39,7 +39,7 @@ noc_pkt req = new();
 		bit[26:0] pld[TOTAL_PAYLOADS_PER_PACKET];
 		bit[7:0] sa,da;
 		int file_red,line_cnt,pkt_cnt,r;
-		file_red = $fopen($sformatf("core%d.txt",core_seq_num),"r"); //read the file corresponding to the core this sequence is attached to
+		file_red = $fopen($sformatf("cores/core%0d.txt",core_seq_num),"r"); //read the file corresponding to the core this sequence is attached to
 
 		if (!file_red) 
 			begin //{
@@ -60,7 +60,7 @@ noc_pkt req = new();
 			end 		 
 		$fclose(file_red);
 
-		file_red = $fopen($sformatf("core%0d.txt",core_seq_num),"r");
+		file_red = $fopen($sformatf("cores/core%0d.txt",core_seq_num),"r");
 
 		// if (!file_red)
 		// 	begin //{
