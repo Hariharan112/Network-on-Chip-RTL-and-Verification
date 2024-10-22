@@ -52,7 +52,11 @@ class noc_test extends uvm_test;
 		`uvm_info("TEST", "Test runphase", UVM_INFO)
 		phase.raise_objection(this);
 			for (int i = 0; i < pkt_cnt; i++) begin
-				index = $urandom()%TOTAL_CORES;
+				// For running CRV
+				// index = $urandom()%TOTAL_CORES;
+
+				// For running with files
+				index = i;
 				seq[index].start(env.agent[index].sequencer);
 				// #100ns; // it increases sim time SIGNIFICANTLY
 			end
