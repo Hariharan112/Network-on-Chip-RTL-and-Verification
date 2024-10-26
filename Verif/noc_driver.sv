@@ -23,7 +23,7 @@ int core_num;
 		super.new(name, parent);
 	endfunction : new
 
-	// Initialize event objects for each core. Why? We'll find out soon
+	// Initialize event objects for each core
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
 		for(int i = 0; i<TOTAL_CORES; i++) begin 
@@ -44,18 +44,15 @@ int core_num;
 
 	// Handle driving info to each core
 	task core_drive(int n);
-
-		//`uvm_info("DIVER", "diver down", UVM_HIGH)
 		begin
-			//`uvm_info("DIVER", "inside begin block?", UVM_HIGH)
-			//`uvm_info("DIVER", $sformatf("printing vif values %d %d %d %d",vif.clk, vif.data_in, vif.data_out, vif.clr), UVM_HIGH)
+			`uvm_info("DRIVER", $sformatf("printing vif values before clear %d %d %d %d",vif.clk, vif.data_in, vif.data_out, vif.clr), UVM_LOW)
 			@(posedge vif.clk);
 			//`uvm_info("DIVER", "waited for posedge clk?", UVM_HIGH)
 				vif.clr=1'b1;
 			@(posedge vif.clk);
 			//`uvm_info("DIVER", "waited for second posedge clk?", UVM_HIGH)
 				vif.clr=1'b0;
-			//`uvm_info("DIVER", "call?", UVM_HIGH)
+			`uvm_info("DRIVER", "vif clear initiated. call?", UVM_LOW)
 			drive_invalid(n);
 			get_drive(n);
         end
@@ -64,21 +61,23 @@ int core_num;
 
 	task get_drive(int n);
 		forever begin
-			`uvm_info("DIVER", "waiting for seq item", UVM_HIGH)
+			`uvm_info("DIVER", "waiting for seq item", UVM_LOW)
 			seq_item_port.get_next_item(req);
-			`uvm_info("DIVER", "got seq item", UVM_HIGH)
+			`uvm_info("DIVER", "got seq item", UVM_LOW)
+			// After getting a pkt, assign core no of seq to the packet
 			assert(req.core_num == core_num)
 		    drive_data_in(n);
-		    `uvm_info("DIVER", "finished drive_data_in", UVM_HIGH)
+		    `uvm_info("DRIVER", "finished drive_data_in", UVM_LOW)
 			@(posedge vif.clk);
 			seq_item_port.item_done();
 			end
 	endtask:get_drive
 
 	task drive_data_in(int n);
-		`uvm_info("DIVER", $sformatf("driving data (header): %b",req.header_flit), UVM_HIGH)
+		`uvm_info("DRIVER", $sformatf("driving data (header): %b",req.header_flit), UVM_LOW)
 		@(posedge vif.clk);
 			vif.data_in[n] = req.header_flit;
+			// Send trigger that header is sent
 			trigger_events(n);
 		        repeat(8) // Delay by 8 clock cycles. Give time for header to be processed
 		@(posedge vif.clk);
@@ -86,25 +85,28 @@ int core_num;
 		begin
 			
 		 	@(posedge vif.clk);
-		 	`uvm_info("DIVER", $sformatf("driving data (payload): %b",req.payload_flit[i]), UVM_HIGH)
+		 	`uvm_info("DRIVER", $sformatf("driving data (payload) line: %b",req.payload_flit[i]), UVM_LOW)
 			vif.data_in[n] = req.payload_flit[i];
+			// Send trigger that a payload is sent
 			trigger_events(n);
 		end
 		@(posedge vif.clk);
-			`uvm_info("DIVER", $sformatf("driving data (tailer): %b",req.tailer_flit), UVM_HIGH)
+			`uvm_info("DRIVER", $sformatf("driving data (tailer): %b",req.tailer_flit), UVM_LOW)
 			vif.data_in[n] =  req.tailer_flit;
+			// Send trigger that tailer is sent
 			trigger_events(n);
-		        repeat(1)		
+		        repeat(1)		// wait for a clk cycle?
 		@(posedge vif.clk);
-			`uvm_info("DIVER", $sformatf("driving data (invalid): %b",req.invalid_flit), UVM_HIGH)
+			`uvm_info("DRIVER", $sformatf("driving data (invalid): %b",req.invalid_flit), UVM_LOW)
 			vif.data_in[n] =  req.invalid_flit;
+			// Send trigger that invalid flit is sent
 			trigger_events(n);
 		@(posedge vif.clk);
 
 	endtask:drive_data_in
 
 	task drive_invalid(int n);
-		`uvm_info("DRIVER", "Driving invalid", UVM_HIGH)
+		`uvm_info("DRIVER", "Driving invalid data right now", UVM_LOW)
 		@(posedge vif.clk);
 	    
 		vif.data_in[n] = 32'h7fff_ffff;
@@ -113,9 +115,9 @@ int core_num;
 
 	task trigger_events(int n);
 		//@(posedge vif.clk);
-		if(vif.data_in[n][31:29]==3'b001) noc_pkg::ev_001[n].trigger;
-		if(vif.data_in[n][31:29]==3'b000) noc_pkg::ev_000[n].trigger;
-		if(vif.data_in[n][31:29]==3'b010) noc_pkg::ev_010[n].trigger;
+		if(vif.data_in[n][31:29]==3'b001) noc_pkg::ev_001[n].trigger;  // header trigger
+		if(vif.data_in[n][31:29]==3'b000) noc_pkg::ev_000[n].trigger;  // payload trigger
+		if(vif.data_in[n][31:29]==3'b010) noc_pkg::ev_010[n].trigger;  // tailer trigger
 	endtask : trigger_events
 
 endclass : noc_driver

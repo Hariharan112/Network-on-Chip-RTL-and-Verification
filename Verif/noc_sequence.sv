@@ -100,7 +100,7 @@ noc_pkt req = new();
 		    start_item(req);
 		    //assert(req.randomize() with {vc_id == vid; payload_len == TOTAL_PAYLOADS_PER_PACKET-1; core_num == core_seq_num; src_addr == sa; dst_addr == da});
 		    assert(req.randomize() with {payload_len == TOTAL_PAYLOADS_PER_PACKET-1; core_num == core_seq_num; src_addr == core_seq_addr;});
-		    `uvm_info("SEQ", $sformatf(" IN Seq Value of core_seq_num is %d vc_id  is = %b , src_addr is %b dst_addr is %b ",core_seq_num,vid, req.src_addr,req.dst_addr), UVM_HIGH);
+		    `uvm_info("SEQ", $sformatf(" IN Seq Value of core_seq_num is %d vc_id  is = %b , src_addr is %b dst_addr is %b ",core_seq_num,vid, req.src_addr,req.dst_addr), UVM_LOW);
 		    finish_item(req);
 		//$fclose(file_red);
 		

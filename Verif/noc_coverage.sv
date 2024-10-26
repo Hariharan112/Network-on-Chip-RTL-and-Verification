@@ -124,7 +124,7 @@ class noc_coverage extends uvm_agent;
 	  end
   endfunction : build_phase
 
-  task run_phase(uvm_phase phase);
+  task run_phase(uvm_phase phase); // Open threads for all the fifos concurrently
 	  super.run_phase(phase);
 	  foreach(in_fifo[i]) begin
 		  automatic int var_i = i;
