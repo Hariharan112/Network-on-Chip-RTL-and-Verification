@@ -73,7 +73,7 @@ int core_num;
 	endtask:get_drive
 
 	task drive_data_in(int n);
-		`uvm_info("DRIVER", $sformatf("driving data (header): %b",req.header_flit), UVM_HIGH)
+		`uvm_info("DRIVER", $sformatf("driving data (header): %h",req.header_flit), UVM_LOW)
 		@(posedge vif.clk);
 			vif.data_in[n] = req.header_flit;
 			// Send trigger that header is sent

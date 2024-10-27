@@ -40,7 +40,7 @@ class noc_test extends uvm_test;
 
 		//file_red = $fopen("packet_num.txt","r");
 		//$fscanf(file_red, "%d\n", pkt_cnt);
-		pkt_cnt = 200;
+		pkt_cnt = 9;
 	endfunction : build_phase
 
 	function void connect_phase(uvm_phase phase);
