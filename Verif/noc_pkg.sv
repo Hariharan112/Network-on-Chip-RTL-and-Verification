@@ -6,8 +6,8 @@ package noc_pkg;
 	import uvm_pkg::*;
 parameter RANDOM_SEED = 5;
 
-parameter NO_OF_ROWS =2;
-parameter NO_OF_COLUMNS =2;
+parameter NO_OF_ROWS =3;
+parameter NO_OF_COLUMNS =3;
 
 
 parameter TOTAL_CORES = NO_OF_ROWS * NO_OF_COLUMNS;

@@ -79,7 +79,7 @@ class noc_coverage extends uvm_agent;
 	 // }
 	 CROSS_COV: cross SRC_ADDR, DST_ADDR {
 		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
-		option.cross_auto_bin_max = TOTAL_CORES;
+		// option.cross_auto_bin_max = TOTAL_CORES;
 		
  }
   endgroup
@@ -102,7 +102,7 @@ class noc_coverage extends uvm_agent;
 	  // }
 	  CROSS_COV: cross SRC_ADDR, DST_ADDR {
 		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
-		option.cross_auto_bin_max = TOTAL_CORES;
+		// option.cross_auto_bin_max = TOTAL_CORES;
   }
   endgroup
 
@@ -143,9 +143,9 @@ class noc_coverage extends uvm_agent;
 		  vc_id_in[n] = txns_in[n].header_flit[28:27];
 	  src_addr_in[n] = txns_in[n].header_flit[15:8];
 	  dst_addr_in[n] = txns_in[n].header_flit[7:0];
-	  `uvm_info("COVERAGE", $sformatf("INPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_in[n], src_addr_in[n], dst_addr_in[n]), UVM_INFO)
+	  `uvm_info("COVERAGE", $sformatf("INPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_in[n], src_addr_in[n], dst_addr_in[n]), UVM_LOW)
 	  mesh_cg_in.sample(n);
-	  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage IN is %0f, packets sent so far: %d",mesh_cg_in.get_coverage(), in_pkts), UVM_INFO);
+	  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage IN is %0f, packets sent so far: %d",mesh_cg_in.get_coverage(), in_pkts), UVM_LOW);
   end
   endtask : test_coverage_in
 
@@ -156,9 +156,9 @@ class noc_coverage extends uvm_agent;
 		  vc_id_out[n] = txns_out[n].header_flit[28:27];
 		  src_addr_out[n] = txns_out[n].header_flit[15:8];
 		  dst_addr_out[n] = txns_out[n].header_flit[7:0];
-		  `uvm_info("COVERAGE", $sformatf("OUTPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_out[n], src_addr_out[n], dst_addr_out[n]), UVM_INFO)
+		  `uvm_info("COVERAGE", $sformatf("OUTPUT: vc_id:%b, src_addr:%h, dst_addr:%h",vc_id_out[n], src_addr_out[n], dst_addr_out[n]), UVM_LOW)
 		  mesh_cg_out.sample(n);
-		  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage OUT is %0f, packets sent so far: %d",mesh_cg_out.get_coverage(), out_pkts), UVM_INFO);
+		  `uvm_info("COVERAGE", $sformatf("MESH PACKET Coverage OUT is %0f, packets sent so far: %d",mesh_cg_out.get_coverage(), out_pkts), UVM_LOW);
 	  end
   endtask : test_coverage_out
 

@@ -24,13 +24,13 @@ noc_pkt req = new();
 	endfunction : new
 
 	virtual task body();
-	`ifdef FROM_FILE
+	//`ifdef FROM_FILE
 		core_seq_file(core_seq_num); //run the sequence only if the specific core is selected in the core selection vector
-	`endif
+	//`endif
 
-	// `ifdef FROM_RAND
+	`ifdef FROM_RAND
 		core_seq_rand(core_seq_num);
-	// `endif
+	`endif
 	endtask:body
 
 	task core_seq_file(int n);
@@ -54,9 +54,9 @@ noc_pkt req = new();
 					r=$fscanf(file_red, "%b\n",fl); // Read line by line, and write contents into fl(data rewritten for every line)
 				end 
 					
-		pkt_cnt=(line_cnt/TOTAL_PACKET_SIZE);
+		pkt_cnt=(line_cnt/3);
 		`uvm_info("SEQ", $sformatf("Value of line count is = %d",line_cnt), UVM_HIGH)
-		`uvm_info("SEQ", $sformatf("Value of pkt count is = %d",pkt_cnt), UVM_HIGH)
+		`uvm_info("SEQ", $sformatf("Value of pkt count is = %0d",pkt_cnt), UVM_LOW)
 			end 		 
 		$fclose(file_red);
 
@@ -99,8 +99,8 @@ noc_pkt req = new();
 		    
 		    start_item(req);
 		    //assert(req.randomize() with {vc_id == vid; payload_len == TOTAL_PAYLOADS_PER_PACKET-1; core_num == core_seq_num; src_addr == sa; dst_addr == da});
-		    assert(req.randomize() with {payload_len == TOTAL_PAYLOADS_PER_PACKET-1; core_num == core_seq_num; src_addr == core_seq_addr;});
-		    `uvm_info("SEQ", $sformatf(" IN Seq Value of core_seq_num is %d vc_id  is = %b , src_addr is %b dst_addr is %b ",core_seq_num,vid, req.src_addr,req.dst_addr), UVM_LOW);
+		    assert(req.randomize() with {payload_len == TOTAL_PAYLOADS_PER_PACKET-1; core_num == core_seq_num; src_addr == core_seq_addr;vc_id == 2'b00;});
+		    `uvm_info("SEQ", $sformatf(" IN Seq Value of core_seq_num is %d vc_id  is = %b , src_addr is %b dst_addr is %b ",core_seq_num,vid, req.src_addr,req.dst_addr), UVM_HIGH);
 		    finish_item(req);
 		//$fclose(file_red);
 		

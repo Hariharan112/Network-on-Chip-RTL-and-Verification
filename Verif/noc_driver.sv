@@ -45,7 +45,6 @@ int core_num;
 	// Handle driving info to each core
 	task core_drive(int n);
 		begin
-			`uvm_info("DRIVER", $sformatf("printing vif values before clear %d %d %d %d",vif.clk, vif.data_in, vif.data_out, vif.clr), UVM_LOW)
 			@(posedge vif.clk);
 			//`uvm_info("DIVER", "waited for posedge clk?", UVM_HIGH)
 				vif.clr=1'b1;
@@ -61,20 +60,20 @@ int core_num;
 
 	task get_drive(int n);
 		forever begin
-			`uvm_info("DIVER", "waiting for seq item", UVM_LOW)
+			`uvm_info("DRIVER", "waiting for seq item", UVM_HIGH)
 			seq_item_port.get_next_item(req);
-			`uvm_info("DIVER", "got seq item", UVM_LOW)
+			`uvm_info("DRIVER", "got seq item", UVM_HIGH)
 			// After getting a pkt, assign core no of seq to the packet
 			assert(req.core_num == core_num)
 		    drive_data_in(n);
-		    `uvm_info("DRIVER", "finished drive_data_in", UVM_LOW)
+		    `uvm_info("DRIVER", "finished drive_data_in", UVM_HIGH)
 			@(posedge vif.clk);
 			seq_item_port.item_done();
 			end
 	endtask:get_drive
 
 	task drive_data_in(int n);
-		`uvm_info("DRIVER", $sformatf("driving data (header): %b",req.header_flit), UVM_LOW)
+		`uvm_info("DRIVER", $sformatf("driving data (header): %b",req.header_flit), UVM_HIGH)
 		@(posedge vif.clk);
 			vif.data_in[n] = req.header_flit;
 			// Send trigger that header is sent
@@ -85,19 +84,19 @@ int core_num;
 		begin
 			
 		 	@(posedge vif.clk);
-		 	`uvm_info("DRIVER", $sformatf("driving data (payload) line: %b",req.payload_flit[i]), UVM_LOW)
+		 	`uvm_info("DRIVER", $sformatf("driving data (payload) line: %b",req.payload_flit[i]), UVM_HIGH)
 			vif.data_in[n] = req.payload_flit[i];
 			// Send trigger that a payload is sent
 			trigger_events(n);
 		end
 		@(posedge vif.clk);
-			`uvm_info("DRIVER", $sformatf("driving data (tailer): %b",req.tailer_flit), UVM_LOW)
+			`uvm_info("DRIVER", $sformatf("driving data (tailer): %b",req.tailer_flit), UVM_HIGH)
 			vif.data_in[n] =  req.tailer_flit;
 			// Send trigger that tailer is sent
 			trigger_events(n);
 		        repeat(1)		// wait for a clk cycle?
 		@(posedge vif.clk);
-			`uvm_info("DRIVER", $sformatf("driving data (invalid): %b",req.invalid_flit), UVM_LOW)
+			`uvm_info("DRIVER", $sformatf("driving data (invalid): %b",req.invalid_flit), UVM_HIGH)
 			vif.data_in[n] =  req.invalid_flit;
 			// Send trigger that invalid flit is sent
 			trigger_events(n);
@@ -106,7 +105,7 @@ int core_num;
 	endtask:drive_data_in
 
 	task drive_invalid(int n);
-		`uvm_info("DRIVER", "Driving invalid data right now", UVM_LOW)
+		`uvm_info("DRIVER", "Driving invalid data right now", UVM_HIGH)
 		@(posedge vif.clk);
 	    
 		vif.data_in[n] = 32'h7fff_ffff;

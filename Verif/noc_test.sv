@@ -33,7 +33,7 @@ class noc_test extends uvm_test;
 		uvm_config_db#(virtual noc_if)::get(this, "*", "vif", noc_config0.vif);
 		uvm_config_db#(my_noc_config)::set(this, "*", "noc_config0", noc_config0);
 		foreach(seq[i]) begin
-			seq[i] = noc_sequence::type_id::create($sformatf("seq[%d]",i), this);
+			seq[i] = noc_sequence::type_id::create($sformatf("seq[%0d]",i), this);
 			seq[i].core_seq_num = i;
 			seq[i].core_seq_addr = noc_pkg::arr[$sformatf("CORE%0d_ADDR",i)];
 		end
@@ -53,17 +53,17 @@ class noc_test extends uvm_test;
 		phase.raise_objection(this);
 			for (int i = 0; i < pkt_cnt; i++) begin
 				// For running CRV
-				// index = $urandom()%TOTAL_CORES;
+				index = $urandom()%TOTAL_CORES;
 
 				// For running with files
-				index = i;
+				// index = i;
 				seq[index].start(env.agent[index].sequencer);
 				// #100ns; // it increases sim time SIGNIFICANTLY
 			end
 		`uvm_info("TEST", "All packets sent. Waiting for DUT to process...", UVM_INFO)
-  		#10us;
+  		#200ns;
 		phase.drop_objection(this);
-
+		$finish;
 	endtask : run_phase
 
 endclass : noc_test
