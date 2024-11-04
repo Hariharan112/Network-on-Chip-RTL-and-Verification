@@ -61,39 +61,39 @@ task data_in_collect(int n);
 		@(posedge vif.clk); #1;
 		if(vif.clr == 0) begin // start looking if vif is cleared
 			//wait for header flit
-			`uvm_info("MONITOR", "Waiting for header_flit (001)", UVM_LOW)
+			// `uvm_info("MONITOR", "Waiting for header_flit (001)", UVM_LOW)
 			noc_pkg::ev_001[n].wait_trigger;
-			`uvm_info("MONITOR", "Got header_flit (001)", UVM_LOW)
+			// `uvm_info("MONITOR", "Got header_flit (001)", UVM_LOW)
 			//load flit into pkt
 			in_collect.header_flit = vif.data_in[n];
-			`uvm_info("MONITOR", $sformatf("Header in in_collect: %h",in_collect.header_flit), UVM_LOW)
+			// `uvm_info("MONITOR", $sformatf("Header in in_collect: %h",in_collect.header_flit), UVM_LOW)
 			//wait for payloads
-			`uvm_info("MONITOR", "Waiting for payload_flit (000)",UVM_LOW)
+			// `uvm_info("MONITOR", "Waiting for payload_flit (000)",UVM_LOW)
 			noc_pkg::ev_000[n].wait_trigger;
-			`uvm_info("MONITOR", "Got payload_flit (000)",UVM_LOW)
+			// `uvm_info("MONITOR", "Got payload_flit (000)",UVM_LOW)
 			//load paylaods into q
 			while(vif.data_in[n][31:29] == 000) begin 
 				data_in_payloads.push_back(vif.data_in[n]);
-				`uvm_info("MONITOR", $sformatf("payload line into queue: %h",vif.data_in[n]), UVM_HIGH)
+				// `uvm_info("MONITOR", $sformatf("payload line into queue: %h",vif.data_in[n]), UVM_HIGH)
 				@(posedge vif.clk); 
 			end
 			//empty q into pkt
 			in_collect.payload_flit = new[data_in_payloads.size];
 			for(int i = 0; i < data_in_payloads.size; i++) begin 
 				in_collect.payload_flit[i] = data_in_payloads.pop_front();
-				`uvm_info("MONITOR", $sformatf("payload line in in_collect: %h",in_collect.payload_flit[i]), UVM_HIGH)
+				// `uvm_info("MONITOR", $sformatf("payload line in in_collect: %h",in_collect.payload_flit[i]), UVM_HIGH)
 			end
 
 			//wait for tailer
-			`uvm_info("MONITOR", "Waiting for tailer_flit (010)", UVM_LOW)
+			// `uvm_info("MONITOR", "Waiting for tailer_flit (010)", UVM_LOW)
 			// noc_pkg::ev_010[n].wait_trigger; // This wont work as most of the times payload sent before payload is received, and then this trigger is never received
-			`uvm_info("MONITOR", "Got tailer_flit (010)", UVM_LOW)
+			// `uvm_info("MONITOR", "Got tailer_flit (010)", UVM_LOW)
 			//load flit into pkt
 			in_collect.tailer_flit = vif.data_in[n];
-			`uvm_info("MONITOR", $sformatf("Tailer in in_collect: %h",in_collect.tailer_flit), UVM_HIGH)
+			// `uvm_info("MONITOR", $sformatf("Tailer in in_collect: %h",in_collect.tailer_flit), UVM_HIGH)
 			//send pkt over port
 			in_port.write(in_collect);
-			`uvm_info("MONITOR", "Sent in pkt to scb", UVM_LOW)
+			// `uvm_info("MONITOR", "Sent in pkt to scb", UVM_LOW)
 
 		end
 
@@ -110,36 +110,36 @@ task data_out_collect(int n);
 		if(vif.clr == 0) begin 
 
 			//wait for header flit
-			`uvm_info("MONITOR_OUT", "Waiting for header_flit", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Waiting for header_flit", UVM_LOW)
 			ev_001_out.wait_trigger;
-			`uvm_info("MONITOR_OUT", "Got header_flit", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Got header_flit", UVM_LOW)
 			//load it
 			out_collect.header_flit = vif.data_out[n];
-			`uvm_info("MONITOR_OUT", $sformatf("Header in out_collect: %h",out_collect.header_flit), UVM_LOW)
+			// `uvm_info("MONITOR_OUT", $sformatf("Header in out_collect: %h",out_collect.header_flit), UVM_LOW)
 
 			//wait for payloads
-			`uvm_info("MONITOR_OUT", "Waiting for payload_flit", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Waiting for payload_flit", UVM_LOW)
 			ev_000_out.wait_trigger;
 			while(vif.data_out[n][31:29] == 3'b000) begin 
 				data_out_payloads.push_back(vif.data_out[n]);
-				`uvm_info("MONITOR_OUT", $sformatf("Got a payload_flit line in queue: %h",vif.data_out[n]), UVM_HIGH)
+				// `uvm_info("MONITOR_OUT", $sformatf("Got a payload_flit line in queue: %h",vif.data_out[n]), UVM_HIGH)
 				@(posedge vif.clk);
 			end
 			out_collect.payload_flit = new[data_out_payloads.size];
 			for(int i = 0; i<data_out_payloads.size; i++) begin 
 				out_collect.payload_flit[i] = data_out_payloads.pop_front();
-				`uvm_info("MONITOR_OUT", $sformatf("Got a payload_flit in out_collect: %h",out_collect.payload_flit[i]), UVM_HIGH)
+				// `uvm_info("MONITOR_OUT", $sformatf("Got a payload_flit in out_collect: %h",out_collect.payload_flit[i]), UVM_HIGH)
 			end
 
-			`uvm_info("MONITOR_OUT", "Waiting for tailer_flit", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Waiting for tailer_flit", UVM_LOW)
 			// ev_010_out.wait_trigger;
 			//since we're here, tailer arrived
-			`uvm_info("MONITOR_OUT", "Got tailer_flit", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Got tailer_flit", UVM_LOW)
 			out_collect.tailer_flit = vif.data_out[n];
 
 			//send it
 			out_port.write(out_collect);
-			`uvm_info("MONITOR_OUT", "Sent out pkt to scb", UVM_LOW)
+			// `uvm_info("MONITOR_OUT", "Sent out pkt to scb", UVM_LOW)
 
 		end
 	end

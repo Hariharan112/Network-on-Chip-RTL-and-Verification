@@ -31,7 +31,7 @@ class noc_env extends uvm_env;
 			agent[i].core_num = i;
 		end
 		coverage = noc_coverage::type_id::create("coverage", this);
-		// scoreboard = noc_scoreboard::type_id::create("scoreboard", this);
+		scoreboard = noc_scoreboard::type_id::create("scoreboard", this);
 	endfunction : build_phase
 
 	function void connect_phase(uvm_phase phase);
@@ -40,8 +40,8 @@ class noc_env extends uvm_env;
 			agent[i].monitor.in_port.connect(coverage.in_fifo[i].analysis_export);
 			agent[i].monitor.out_port.connect(coverage.out_fifo[i].analysis_export);
 
-			// agent[i].monitor.in_port.connect(scoreboard.in_port);
-			// agent[i].monitor.out_port.connect(scoreboard.out_port);
+			agent[i].monitor.in_port.connect(scoreboard.in_port);
+			agent[i].monitor.out_port.connect(scoreboard.out_port);
 		end
 
 	endfunction : connect_phase
