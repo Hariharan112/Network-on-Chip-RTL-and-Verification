@@ -40,7 +40,7 @@ class noc_test extends uvm_test;
 
 		//file_red = $fopen("packet_num.txt","r");
 		//$fscanf(file_red, "%d\n", pkt_cnt);
-		pkt_cnt = 9;
+		pkt_cnt = 5000;
 	endfunction : build_phase
 
 	function void connect_phase(uvm_phase phase);
@@ -50,6 +50,7 @@ class noc_test extends uvm_test;
 	task run_phase(uvm_phase phase);
 		super.run_phase(phase);
 		`uvm_info("TEST", "Test runphase", UVM_INFO)
+		// phase.set_drain_time(500 ns);
 		phase.raise_objection(this);
 			for (int i = 0; i < pkt_cnt; i++) begin
 				// For running CRV
@@ -61,7 +62,7 @@ class noc_test extends uvm_test;
 				// #100ns; // it increases sim time SIGNIFICANTLY
 			end
 		`uvm_info("TEST", "All packets sent. Waiting for DUT to process...", UVM_INFO)
-  		#200ns;
+		repeat (10) @(posedge clk);
 		phase.drop_objection(this);
 		$finish;
 	endtask : run_phase

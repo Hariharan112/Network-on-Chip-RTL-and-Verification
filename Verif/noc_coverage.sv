@@ -78,7 +78,7 @@ class noc_coverage extends uvm_agent;
 	 //   //option.weight=0;
 	 // }
 	 CROSS_COV: cross SRC_ADDR, DST_ADDR {
-		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
+		// illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
 		// option.cross_auto_bin_max = TOTAL_CORES;
 		
  }
@@ -101,7 +101,7 @@ class noc_coverage extends uvm_agent;
 	  //   //option.weight=0;
 	  // }
 	  CROSS_COV: cross SRC_ADDR, DST_ADDR {
-		illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
+		// illegal_bins ib = CROSS_COV with (SRC_ADDR == DST_ADDR);
 		// option.cross_auto_bin_max = TOTAL_CORES;
   }
   endgroup

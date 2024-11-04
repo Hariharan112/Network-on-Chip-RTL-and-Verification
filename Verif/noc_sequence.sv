@@ -24,13 +24,13 @@ noc_pkt req = new();
 	endfunction : new
 
 	virtual task body();
-	//`ifdef FROM_FILE
+	`ifdef FROM_FILE
 		core_seq_file(core_seq_num); //run the sequence only if the specific core is selected in the core selection vector
-	//`endif
-
-	`ifdef FROM_RAND
-		core_seq_rand(core_seq_num);
 	`endif
+
+	// `ifdef FROM_RAND
+		core_seq_rand(core_seq_num);
+	// `endif
 	endtask:body
 
 	task core_seq_file(int n);
